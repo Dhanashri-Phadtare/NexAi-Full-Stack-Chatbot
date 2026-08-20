@@ -195,10 +195,6 @@ Create a .env file in the project root and add your API key:
 
 GROQ_API_KEY=your_api_key_here
 
-Never commit your API key or .env file to GitHub.
-
-Make sure .env is included in .gitignore.
-
 5. Run the application
 
 python app.py
@@ -215,8 +211,6 @@ Variable         Purpose
 GROQ_API_KEY   API key used for LLM-powered responses
 SECRET_KEY     Flask session/security key
 
-Use environment variables rather than hardcoding secrets in Python
-files.
 
 🔒 Security
 
