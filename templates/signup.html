@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+
+{% block title %}
+Sign Up | NexAI
+{% endblock %}
+
+{% block content %}
+
+<div class="auth-container">
+
+    <!-- Left Panel -->
+
+    <div class="auth-left">
+
+        <div class="brand">
+
+           <img src="{{ url_for('static', filename='img/nexai-logo-full.png') }}" alt="NexAI" class="logo-full">
+           
+            <p class="tagline">
+                Intelligence Redefined
+            </p>
+
+        </div>
+
+        <div class="hero-text">
+
+            <h2>Create Your Account</h2>
+
+            <p>
+                Join NexAI and experience intelligent conversations,
+                project management, and AI-powered productivity.
+            </p>
+
+            <div class="feature-list">
+
+                <div class="feature">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>AI Powered Assistance</span>
+                </div>
+
+                <div class="feature">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>Manage Projects Easily</span>
+                </div>
+
+                <div class="feature">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Secure Account Protection</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Right Panel -->
+
+    <div class="auth-right">
+
+        <div class="auth-card">
+
+            <h2>Create Account</h2>
+
+            <p class="subtitle">
+                Get started with NexAI today
+            </p>
+
+            {% if error %}
+            <div class="auth-error">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('signup') }}">
+
+                <!-- Name -->
+
+                <div class="input-group">
+
+                    <label for="name">Full Name</label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-user"></i>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            class="form-control"
+                            placeholder="Enter your full name"
+                            required
+                            autocomplete="name">
+
+                    </div>
+
+                </div>
+
+                <!-- Email -->
+
+                <div class="input-group">
+
+                    <label for="email">Email</label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-envelope"></i>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="form-control"
+                            placeholder="Enter your email"
+                            required
+                            autocomplete="email">
+
+                    </div>
+
+                </div>
+
+                <!-- Password -->
+
+                <div class="input-group">
+
+                    <label for="password">Password</label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="Create a password"
+                            required
+                            minlength="8"
+                            autocomplete="new-password">
+
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            onclick="togglePassword('password', this)">
+
+                            <i class="fa-solid fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Confirm Password -->
+
+                <div class="input-group">
+
+                    <label for="confirm_password">Confirm Password</label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            placeholder="Confirm your password"
+                            class="form-control"
+                            required
+                            autocomplete="new-password">
+
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            onclick="togglePassword('confirm_password', this)">
+
+                            <i class="fa-solid fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Password Strength -->
+
+                <div class="password-strength">
+
+                    <div class="strength-bar">
+                        <span id="strength-fill"></span>
+                    </div>
+
+                    <small id="strength-text">
+                        Password Strength
+                    </small>
+
+                </div>
+
+                <!-- Terms -->
+
+                <label class="remember">
+
+                    <input type="checkbox" required>
+
+                    I agree to the Terms & Conditions
+
+                </label>
+
+                <!-- Submit -->
+
+                <button type="submit" class="auth-btn">
+
+                    <i class="fa-solid fa-user-plus"></i>
+
+                    Create Account
+
+                </button>
+
+            </form>
+
+            <div class="divider">
+
+                <span>OR</span>
+
+            </div>
+
+            <p class="bottom-text">
+
+                Already have an account?
+
+                <a href="{{ url_for('login') }}">
+
+                    Login
+
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+function togglePassword(id, button){
+
+    const input = document.getElementById(id);
+
+    const icon = button.querySelector("i");
+
+    if(input.type === "password"){
+
+        input.type = "text";
+
+        icon.classList.replace("fa-eye","fa-eye-slash");
+
+    }else{
+
+        input.type = "password";
+
+        icon.classList.replace("fa-eye-slash","fa-eye");
+
+    }
+
+}
+
+const password=document.getElementById("password");
+const confirm=document.getElementById("confirm_password");
+const fill=document.getElementById("strength-fill");
+const text=document.getElementById("strength-text");
+
+password.addEventListener("input",()=>{
+
+    const value=password.value;
+
+    let score=0;
+
+    if(value.length>=8) score++;
+    if(/[A-Z]/.test(value)) score++;
+    if(/[0-9]/.test(value)) score++;
+    if(/[^A-Za-z0-9]/.test(value)) score++;
+
+    const width=(score/4)*100;
+
+    fill.style.width=width+"%";
+
+    if(score<=1)
+        text.innerText="Weak Password";
+
+    else if(score==2)
+        text.innerText="Fair Password";
+
+    else if(score==3)
+        text.innerText="Good Password";
+
+    else
+        text.innerText="Strong Password";
+
+});
+
+document.querySelector("form").addEventListener("submit",function(e){
+
+    if(password.value!==confirm.value){
+
+        e.preventDefault();
+
+        alert("Passwords do not match.");
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

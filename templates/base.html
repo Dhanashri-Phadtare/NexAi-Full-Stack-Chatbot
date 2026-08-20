@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}NexAI{% endblock %}</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon-32.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- Background -->
+    <div class="background">
+        <div class="blur-circle circle1"></div>
+        <div class="blur-circle circle2"></div>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-wrapper">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        <i class="fa-solid
+                        {% if category=='success' %}
+                            fa-circle-check
+                        {% elif category=='danger' %}
+                            fa-circle-xmark
+                        {% elif category=='warning' %}
+                            fa-triangle-exclamation
+                        {% else %}
+                            fa-circle-info
+                        {% endif %}
+                        "></i>
+
+                        <span>{{ message }}</span>
+
+                        <button class="flash-close">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main>
+
+        {% block content %}
+
+        {% endblock %}
+
+    </main>
+
+    <script>
+
+        // Close flash messages
+
+        document.querySelectorAll(".flash-close").forEach(btn => {
+
+            btn.addEventListener("click", () => {
+
+                btn.parentElement.remove();
+
+            });
+
+        });
+
+    </script>
+
+    {% block scripts %}
+
+    {% endblock %}
+
+</body>
+
+</html>

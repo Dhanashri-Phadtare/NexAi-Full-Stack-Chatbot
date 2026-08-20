@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexAi - Intelligence Redefined</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container" id="appContainer">
+
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+            <img src="{{ url_for('static', filename='img/nexai-icon.png') }}" alt="NexAI" class="brand-icon-img">
+            </div>
+
+            <nav class="nav-menu">
+                <button id="newChatBtn" class="new-chat-btn">
+                    <i class="fa-solid fa-plus"></i> New Chat
+                </button>
+
+                <a href="#" id="historyNavLink" data-tab="history">
+                    <i class="fa-solid fa-clock-rotate-left"></i> History
+                </a>
+            </nav>
+
+            <div class="chat-history-list" id="chatHistoryList" style="display:none;">
+                <input type="text" id="historySearchInput" class="history-search-input" placeholder="Search chats...">
+                <p class="history-empty" id="historyEmptyState">No saved chats yet.</p>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="#" id="settingsNavLink"><i class="fa-solid fa-gear"></i> Settings</a>
+                <a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
+
+                <button id="profileBtn" class="sidebar-footer-profile">
+                    <i class="fa-solid fa-circle-user"></i>
+                    <span id="profileBtnName">User Profile</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area" id="chatArea">
+            <header class="chat-header">
+                <div class="left-header">
+                    <button id="menuBtn" class="icon-btn" title="Toggle sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="chat-title">
+                        <h3>NexAi</h3>
+                        <span class="status-badge"><span class="pulse"></span>Online</span>
+                    </div>
+                </div>
+
+                <button id="toolBtn" class="icon-btn" title="Toggle toolkit">
+                    <i class="fa-solid fa-sliders"></i>
+                </button>
+            </header>
+
+            <div class="chat-container" id="chatContainer">
+                <div class="chat-messages" id="chatMessages"></div>
+            </div>
+
+            <div class="center-stage-container" id="centerStage">
+                <div class="greeting-box" id="greetingBox">
+                    <h2>Hello! I'm NexAi.</h2>
+                    <p>How can I assist you today?</p>
+                </div>
+
+              <div class="chat-input-wrapper">
+    <!-- decoy fields: absorb the browser's autofill instead of #userInput -->
+    <input type="text" name="fakeusernameremembered" style="position:absolute; opacity:0; height:0; width:0; pointer-events:none;" tabindex="-1" aria-hidden="true">
+    <input type="password" name="fakepasswordremembered" style="position:absolute; opacity:0; height:0; width:0; pointer-events:none;" tabindex="-1" aria-hidden="true">
+
+    <input type="text" id="userInput" name="chatPrompt" autocomplete="off"
+           readonly onfocus="this.removeAttribute('readonly');"
+           data-lpignore="true" data-form-type="other"
+           placeholder="Ask something to NexAi...">
+    <button id="sendBtn" class="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+</div>
+
+</div>
+        </main>
+
+        <!-- Right Toolkit Panel -->
+        <aside class="toolkit-panel" id="toolPanel">
+
+            <div class="panel-section">
+                <h4>Projects</h4>
+                <div class="projects-list" id="projectsList">
+                    <p class="history-empty" id="projectsEmptyState">No projects yet.</p>
+                </div>
+                <button class="new-project-btn" id="newProjectBtn">
+                    <i class="fa-solid fa-folder-plus"></i> New Project
+                </button>
+            </div>
+
+            <div class="panel-section">
+                <h4>Action Items</h4>
+                <div class="action-items-list" id="actionItemsList">
+                    <p class="history-empty" id="actionItemsEmptyState">
+                        Nothing yet. Say things like "remind me to..." or "I need to..." in chat and they'll show up here.
+                    </p>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h4>Tools</h4>
+                <div class="tools-grid">
+                    <button class="tool-btn" id="graphToolBtn"><i class="fa-solid fa-chart-network"></i> Graph</button>
+                </div>
+
+                <div class="usage-chart-panel" id="usageChartPanel">
+                    <div class="usage-chart-header">
+                        <h5>Your usage this week</h5>
+                    </div>
+                    <div class="usage-chart-canvas-wrap">
+                        <canvas id="usageChart"></canvas>
+                    </div>
+                    <div class="usage-chart-legend">
+                        <span><i class="legend-dot dot-messages"></i> Questions asked</span>
+                        <span><i class="legend-dot dot-difficulty"></i> Avg. difficulty</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Profile modal -->
+    <div class="modal-overlay" id="profileModalOverlay">
+        <div class="profile-modal">
+            <button class="modal-close" id="closeProfileModal">&times;</button>
+            <div class="profile-modal-avatar"><i class="fa-solid fa-circle-user"></i></div>
+            <h3 id="profileModalName">Guest User</h3>
+            <p class="profile-modal-email" id="profileModalEmail">guest@nexai.dev</p>
+
+            <div class="profile-detail-row">
+                <span>Member since</span>
+                <span id="profileModalJoined">—</span>
+            </div>
+            <div class="profile-detail-row">
+                <span>Plan</span>
+                <span id="profileModalPlan">Free</span>
+            </div>
+            <div class="profile-detail-row">
+                <span>Saved chats</span>
+                <span id="profileModalChatCount">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings modal -->
+    <div class="modal-overlay" id="settingsModalOverlay">
+        <div class="profile-modal settings-modal">
+            <button class="modal-close" id="closeSettingsModal">&times;</button>
+            <h3>Settings</h3>
+
+            <div class="settings-tabs">
+                <button class="settings-tab active" data-tab="appearance">Appearance</button>
+                <button class="settings-tab" data-tab="chat">Chat</button>
+                <button class="settings-tab" data-tab="account">Account</button>
+            </div>
+
+            <div class="settings-panel active" data-panel="appearance">
+                <div class="settings-row">
+                    <span>Theme</span>
+                    <div class="toggle-switch" id="themeToggle">
+                        <span class="toggle-option" data-value="dark">Dark</span>
+                        <span class="toggle-option" data-value="light">Light</span>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <span>Font size</span>
+                    <select id="fontSizeSelect">
+                        <option value="small">Small</option>
+                        <option value="medium">Medium</option>
+                        <option value="large">Large</option>
+                    </select>
+                </div>
+                <div class="settings-row">
+                    <span>Font style</span>
+                    <select id="fontFamilySelect">
+                        <option value="sans">Sans-serif</option>
+                        <option value="serif">Serif</option>
+                        <option value="mono">Monospace</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-panel" data-panel="chat">
+                <div class="settings-row">
+                    <span>Message sounds</span>
+                    <label class="switch">
+                        <input type="checkbox" id="soundToggle">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-panel" data-panel="account">
+                <div class="settings-form-group">
+                    <label>Display name</label>
+                    <input type="text" id="settingsNameInput">
+                    <button class="settings-save-btn" id="saveNameBtn">Save name</button>
+                    <p class="settings-feedback" id="nameFeedback"></p>
+                </div>
+                <hr class="settings-divider">
+                <div class="settings-form-group">
+                    <label>Email address</label>
+                    <input type="email" id="settingsEmailInput">
+                    <label>Current password (to confirm)</label>
+                    <input type="password" id="emailPasswordInput">
+                    <button class="settings-save-btn" id="saveEmailBtn">Save email</button>
+                    <p class="settings-feedback" id="emailFeedback"></p>
+                </div>
+                <hr class="settings-divider">
+                <div class="settings-form-group">
+                    <label>Current password</label>
+                    <input type="password" id="currentPasswordInput">
+                    <label>New password</label>
+                    <input type="password" id="newPasswordInput">
+                    <button class="settings-save-btn" id="savePasswordBtn">Change password</button>
+                    <p class="settings-feedback" id="passwordFeedback"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project modal -->
+    <div class="modal-overlay" id="projectModalOverlay">
+        <div class="profile-modal project-modal">
+            <button class="modal-close" id="closeProjectModal">&times;</button>
+            <h3 id="projectModalTitle">Project</h3>
+            <div class="project-chat-list" id="projectChatList"></div>
+        </div>
+    </div>
+
+    <script>
+        window.CURRENT_USER_ID = "{{ user_id }}";
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
